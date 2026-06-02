@@ -1,0 +1,37 @@
+name: RayanXWeb Backend CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Source Code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js Environment
+      uses: actions/setup-node@v4
+      with:
+        node-node-version: 20
+        cache: 'npm'
+
+    - name: Install Node Dependencies
+      run: npm ci
+
+    - name: Code Quality Validation (Linting)
+      run: npm run lint --if-present
+
+    - name: Authenticate and Deploy to Production VPS via SSH
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VPS_HOST }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        script: |
+          cd /var/www/rayanxweb-backend
+          git pull origin main
+          npm install --production
+          docker-compose down
+          docker-compose up -d --build
