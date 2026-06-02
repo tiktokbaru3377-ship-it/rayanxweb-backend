@@ -2,13 +2,13 @@ const config = require('../config');
 const logger = require('../utils/logger');
 const mongoose = require('mongoose');
 
-// Koneksi Database untuk Sandbox Worker Thread
 mongoose.connect(config.mongoUri)
-  .then(() => logger.info('All Independent Background Workers Connected to Cluster Database'))
-  .catch(err => logger.error('Worker DB Connection Error:', err));
+  .then(() => logger.info('Database sandbox linked for micro-workers successfully.'))
+  .catch(err => logger.error('Worker DB Connection Aborted:', err));
 
-// Registrasi Seluruh Worker Script
-require('./audit.worker'); // Worker audit logs dari bagian 1
-require('./cleanup.worker'); // Worker untuk cron-cleanup data terbaru
+// Memuat semua skrip worker independen
+require('./audit.worker');
+require('./cleanup.worker');
+require('./notification.worker');
 
-logger.info('Workers processing threads running successfully.');
+logger.info('=== ALL SYSTEM WORKER THREADS ACTIVATED ===');
