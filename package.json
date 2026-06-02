@@ -1,36 +1,66 @@
 {
   "name": "rayanxweb-backend",
   "version": "1.0.0",
-  "description": "Production-Ready Backend for RayanXWeb MDM & Dashboard System",
+  "description": "Enterprise-Grade MDM and Device Telemetry Core Backend Engine for RayanXWeb",
   "main": "src/server.js",
-  "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
-    "worker": "node src/workers/index.js",
-    "lint": "eslint src/**/*.js",
-    "format": "prettier --write src/**/*.js"
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
+  "scripts": {
+    "start": "NODE_ENV=production node src/server.js",
+    "dev": "NODE_ENV=development nodemon src/server.js",
+    "worker": "NODE_ENV=production node src/workers/index.js",
+    "worker:dev": "NODE_ENV=development nodemon src/workers/index.js",
+    "lint": "eslint src/**/*.js",
+    "lint:fix": "eslint src/**/*.js --fix",
+    "test": "NODE_ENV=test jest --runInBand --detectOpenHandles",
+    "test:watch": "NODE_ENV=test jest --watch",
+    "test:coverage": "NODE_ENV=test jest --coverage"
+  },
+  "keywords": [
+    "mdm",
+    "android-enterprise",
+    "socket-io",
+    "bullmq",
+    "redis",
+    "firebase-admin",
+    "mongoose"
+  ],
+  "author": "RayanXWeb Engineering Team",
+  "license": "MIT",
   "dependencies": {
-    "@bullmq/bull-mq": "^1.8.0",
+    "@socket.io/redis-adapter": "^8.3.0",
+    "bullmq": "^5.4.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "express-mongo-sanitize": "^2.2.0",
     "express-rate-limit": "^7.2.0",
-    "firebase-admin": "^12.1.0",
+    "firebase-admin": "^12.0.0",
     "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.3.1",
+    "mongoose": "^8.2.1",
     "redis": "^4.6.13",
     "socket.io": "^4.7.5",
-    "@socket.io/redis-adapter": "^8.3.0",
-    "winston": "^3.13.0",
+    "winston": "^3.12.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "jest": "^29.7.0",
     "nodemon": "^3.1.0",
-    "prettier": "^3.2.5"
+    "prettier": "^3.2.5",
+    "supertest": "^6.3.4"
   },
-  "engines": {
-    "node": ">=20.0.0"
+  "jest": {
+    "testEnvironment": "node",
+    "coverageDirectory": "coverage",
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!src/config/*.js",
+      "!src/utils/logger.js"
+    ],
+    "verbose": true
   }
 }
