@@ -1,34 +1,35 @@
 version: '3.8'
 
 services:
-  api:
+  api_server:
     build: .
+    container_name: rayanx_backend_core
     ports:
       - "5000:5000"
     environment:
-      - NODE_ENV=production
       - PORT=5000
-      - MONGODB_URI=${MONGODB_URI}
-      - REDIS_URL=redis://redis:6379
+      - MONGO_URI=mongodb://mongodb_node:27017/rayanx_mdm
+      - REDIS_URL=redis://redis_node:6379
     depends_on:
-      - redis
+      - mongodb_node
+      - redis_node
+    restart: always
 
-  worker:
-    build: .
-    command: ["npm", "run", "worker"]
-    environment:
-      - NODE_ENV=production
-      - MONGODB_URI=${MONGODB_URI}
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      - redis
+  mongodb_node:
+    image: mongo:6.0
+    container_name: mdm_production_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: always
 
-  redis:
-    image: redis:7-alpine
+  redis_node:
+    image: redis:7.0-alpine
+    container_name: mdm_production_redis
     ports:
       - "6379:6379"
-    volumes:
-      - redis_data:/data
+    restart: always
 
 volumes:
-  redis_data:
+  mongo_data:
