@@ -1,25 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const deviceSchema = new mongoose.Schema({
-  deviceId: { type: String, required: true, unique: true, index: true },
-  deviceName: { type: String, required: true },
-  brand: String,
-  model: String,
-  androidVersion: String,
-  apiLevel: Number,
-  batteryStatus: {
-    level: Number,
-    isCharging: Boolean
-  },
-  networkInfo: {
-    connectionType: String,
-    signalStrength: String,
-    ipAddress: String
-  },
-  statusOnline: { type: Boolean, default: false },
-  lastSeen: { type: Date, default: Date.now },
-  groupId: { type: mongoose.Schema.Types.ObjectId, ref: 'DeviceGroup', default: null },
-  isApproved: { type: Boolean, default: false }
+const DeviceSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true, index: true },
+  name: { type: String, required: true },
+  type: { type: String, required: true },
+  ip: { type: String, required: true },
+  load: { type: String, default: '0%' },
+  status: { type: String, enum: ['Active', 'Offline', 'Restricted'], default: 'Active' },
+  enrolledAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Device', deviceSchema);
+export const Device = mongoose.model('Device', DeviceSchema);
